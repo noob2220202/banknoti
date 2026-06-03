@@ -13,31 +13,34 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val statusText = findViewById<TextView>(R.id.statusText)
-        val permButton = findViewById<Button>(R.id.permButton)
+        TelegramSender.init(this)
 
-        updateStatus(statusText, permButton)
-
-        permButton.setOnClickListener {
+        findViewById<Button>(R.id.permButton).setOnClickListener {
             startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+        }
+
+        findViewById<Button>(R.id.settingsButton).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 
     override fun onResume() {
         super.onResume()
-        val statusText = findViewById<TextView>(R.id.statusText)
-        val permButton = findViewById<Button>(R.id.permButton)
-        updateStatus(statusText, permButton)
+        updateStatus()
     }
 
-    private fun updateStatus(statusText: TextView, permButton: Button) {
-        if (isNotificationPermissionGranted()) {
-            statusText.text = "✅ 알림 접근 권한 활성화됨\n카카오뱅크 알림 감지 중..."
-            permButton.text = "권한 설정 재확인"
-        } else {
-            statusText.text = "❌ 알림 접근 권한 필요\n아래 버튼을 눌러 권한을 허용해주세요."
-            permButton.text = "권한 허용하러 가기"
-        }
+    private fun updateStatus() {
+        val statusText = findViewById<TextView>(R.id.statusText)
+        val permGranted = isNotificationPermissionGranted()
+        val configured  = TelegramSender.isConfigured(this)
+
+        val permLine = if (permGranted) "✅ 알림 접근 권한 활성화됨" else "❌ 알림 접근 권한 필요"
+        val botLine  = if (configured)  "✅ 텔레그램 봇 설정 완료"  else "⚠️ 텔레그램 봇 미설정"
+
+        statusText.text = "$permLine\n$botLine"
+
+        findViewById<Button>(R.id.permButton).text =
+            if (permGranted) "권한 설정 재확인" else "권한 허용하러 가기"
     }
 
     private fun isNotificationPermissionGranted(): Boolean {

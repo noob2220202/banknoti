@@ -11,6 +11,11 @@ class NotificationService : NotificationListenerService() {
         const val KAKAO_BANK_PACKAGE = "com.kakaobank.channel"
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        TelegramSender.init(this)
+    }
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         if (sbn.packageName != KAKAO_BANK_PACKAGE) return
 

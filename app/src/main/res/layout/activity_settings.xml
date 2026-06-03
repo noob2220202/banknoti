@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- 안내 박스 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFF8E1"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📌 설정 방법"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. @BotFather → /newbot → 토큰 복사\n2. 채널에 봇을 관리자로 추가\n3. getUpdates API로 chat id 확인"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:lineSpacingMultiplier="1.5" />
+        </LinearLayout>
+
+        <!-- 봇 토큰 입력 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="봇 토큰 (Bot Token)"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputBotToken"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="123456789:AABBcc..."
+            android:inputType="textVisiblePassword"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="20dp"
+            android:textSize="14sp" />
+
+        <!-- 채팅 ID 입력 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅 ID (Chat ID)"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputChatId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="-100123456789"
+            android:inputType="textVisiblePassword"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="28dp"
+            android:textSize="14sp" />
+
+        <!-- 저장 버튼 -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="저장"
+            android:textSize="16sp"
+            android:padding="14dp"
+            android:backgroundTint="#FFCD00"
+            android:textColor="#1A1A1A"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 테스트 전송 버튼 -->
+        <Button
+            android:id="@+id/btnTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="테스트 메시지 전송"
+            android:textSize="16sp"
+            android:padding="14dp"
+            android:backgroundTint="#2CA5E0"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+</ScrollView>
