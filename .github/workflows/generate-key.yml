@@ -7,12 +7,7 @@ on:
         description: "유효 기간"
         required: true
         type: choice
-        options:
-          - "1일"
-          - "7일"
-          - "30일"
-          - "9999일"
-          - "직접 입력"
+        options: ["1일", "7일", "30일", "9999일", "직접 입력"]
       custom_days:
         description: "직접 입력 시 일수 (예: 14)"
         required: false
@@ -21,14 +16,10 @@ on:
         description: "생성 개수"
         required: true
         type: choice
-        options:
-          - "1"
-          - "3"
-          - "5"
-          - "10"
+        options: ["1", "3", "5", "10"]
         default: "1"
       memo:
-        description: "메모 (누구에게 발급하는지 등)"
+        description: "메모 (수신자 등)"
         required: false
         default: ""
 
@@ -36,49 +27,48 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - name: 라이선스 키 생성
+      - name: VPS 서버에서 키 생성
         run: |
-          python3 - <<'PYEOF'
-          import hmac, hashlib, time
+          DURATION="${{ github.event.inputs.duration }}"
+          CUSTOM="${{ github.event.inputs.custom_days }}"
+          QUANTITY="${{ github.event.inputs.quantity }}"
+          MEMO="${{ github.event.inputs.memo }}"
 
-          SECRET = "NB-NotifyBridge-2024-K9xP2mQr"
+          case "$DURATION" in
+            "1일")    DAYS=1    ;;
+            "7일")    DAYS=7    ;;
+            "30일")   DAYS=30   ;;
+            "9999일") DAYS=9999 ;;
+            *)        DAYS=${CUSTOM:-1} ;;
+          esac
 
-          duration_map = {"1일": 1, "7일": 7, "30일": 30, "9999일": 9999}
+          RESPONSE=$(curl -s -X POST "${{ secrets.LICENSE_SERVER_URL }}/api/generate" \
+            -H "Content-Type: application/json" \
+            -H "X-Admin-Token: ${{ secrets.LICENSE_ADMIN_TOKEN }}" \
+            -d "{\"days\": $DAYS, \"quantity\": $QUANTITY, \"memo\": \"$MEMO\"}")
 
-          duration_input = "${{ github.event.inputs.duration }}"
-          custom_days    = "${{ github.event.inputs.custom_days }}"
-          quantity       = int("${{ github.event.inputs.quantity }}")
-          memo           = "${{ github.event.inputs.memo }}"
+          echo "서버 응답: $RESPONSE"
 
-          if duration_input == "직접 입력" and custom_days.strip():
-              days = int(custom_days.strip())
-          else:
-              days = duration_map.get(duration_input, 1)
+          python3 - <<PYEOF
+          import json, os
+          from datetime import datetime, timedelta
 
-          def generate(days, offset=0):
-              expiry = int(time.time()) + days * 86400 + offset
-              data = str(expiry)
-              sig = hmac.new(SECRET.encode(), data.encode(), hashlib.sha256).hexdigest()[:12].upper()
-              return f"{data}-{sig}", expiry
+          data = json.loads('''$RESPONSE''')
+          keys = data.get("keys", [])
+          days = data.get("days", 0)
+          memo = data.get("memo", "")
 
-          import os
-          summary = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
-
-          with open(summary, "a") as f:
+          summary_file = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          with open(summary_file, "a") as f:
               f.write(f"## 🔑 라이선스 키 발급 완료\n\n")
-              f.write(f"| 항목 | 내용 |\n")
-              f.write(f"|------|------|\n")
+              f.write(f"| 항목 | 내용 |\n|------|------|\n")
               f.write(f"| 유효 기간 | **{days}일** |\n")
               if memo:
                   f.write(f"| 메모 | {memo} |\n")
-              f.write(f"| 발급 수량 | {quantity}개 |\n\n")
-              f.write(f"### 발급된 키\n\n")
+              f.write(f"| 발급 수량 | {len(keys)}개 |\n\n")
+              f.write(f"### 발급된 키 (1회용)\n\n```\n")
+              exp = (datetime.utcnow() + timedelta(days=days)).strftime("%Y-%m-%d")
+              for key in keys:
+                  f.write(f"{key}   (만료: {exp})\n")
               f.write(f"```\n")
-              for i in range(quantity):
-                  key, expiry = generate(days, i)
-                  from datetime import datetime
-                  exp_str = datetime.utcfromtimestamp(expiry).strftime("%Y-%m-%d")
-                  f.write(f"{key}   (만료: {exp_str})\n")
-              f.write(f"```\n")
-
           PYEOF

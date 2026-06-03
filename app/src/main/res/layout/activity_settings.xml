@@ -79,6 +79,27 @@
             android:layout_marginBottom="28dp"
             android:textSize="14sp" />
 
+        <!-- 라이선스 서버 URL -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="라이선스 서버 URL"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputServerUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="http://YOUR_VPS_IP:5000"
+            android:inputType="textUri"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="28dp"
+            android:textSize="14sp" />
+
         <!-- 저장 버튼 -->
         <Button
             android:id="@+id/btnSave"
