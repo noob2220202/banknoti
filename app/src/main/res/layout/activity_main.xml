@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="#FAFAFA">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="24dp"
+        android:src="@android:drawable/ic_dialog_info"
+        android:contentDescription="앱 아이콘" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NotifyBridge"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#1A1A1A"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="카카오뱅크 → 텔레그램 알림 전송"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="40dp" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="권한 상태 확인 중..."
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.4"
+        android:layout_marginBottom="32dp"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:elevation="2dp" />
+
+    <Button
+        android:id="@+id/permButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="권한 허용하러 가기"
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:backgroundTint="#FFCD00"
+        android:textColor="#1A1A1A" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="설정 후 앱으로 돌아오면 상태가 자동 업데이트됩니다."
+        android:textSize="12sp"
+        android:textColor="#999999"
+        android:gravity="center"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
