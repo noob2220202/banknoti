@@ -8,6 +8,9 @@ on:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,11 +36,21 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: NotifyBridge-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30
+      - name: Rename APK
+        run: mv app/build/outputs/apk/debug/app-debug.apk NotifyBridge.apk
+
+      - name: Delete old release if exists
+        run: gh release delete latest-build --yes || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release and upload APK
+        run: |
+          gh release create latest-build NotifyBridge.apk \
+            --title "NotifyBridge 최신 빌드" \
+            --notes "최신 커밋에서 자동 빌드된 APK입니다." \
+            --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
