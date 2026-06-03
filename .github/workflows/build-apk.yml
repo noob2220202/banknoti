@@ -54,3 +54,15 @@ jobs:
             --latest
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Show QR code in summary
+        run: |
+          APK_URL="https://github.com/${{ github.repository }}/releases/latest/download/NotifyBridge.apk"
+          QR_URL="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${APK_URL}"
+          echo "## ✅ 빌드 성공 — APK 설치 방법" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 QR코드 스캔 (폰으로 바로 설치)" >> $GITHUB_STEP_SUMMARY
+          echo "![QR](${QR_URL})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 직접 다운로드 링크" >> $GITHUB_STEP_SUMMARY
+          echo "[NotifyBridge.apk 다운로드](${APK_URL})" >> $GITHUB_STEP_SUMMARY
