@@ -44,7 +44,7 @@ After=network.target
 User=root
 WorkingDirectory=$INSTALL_DIR
 EnvironmentFile=$INSTALL_DIR/.env
-ExecStart=$INSTALL_DIR/venv/bin/gunicorn -w 2 -b 0.0.0.0:5000 app:app
+ExecStart=$INSTALL_DIR/venv/bin/gunicorn -w 2 -b 0.0.0.0:6000 app:app
 Restart=always
 
 [Install]
@@ -58,5 +58,5 @@ systemctl start notifybridge
 echo ""
 echo "✅ 설치 완료!"
 echo "   서버 상태: systemctl status notifybridge"
-echo "   서버 주소: http://YOUR_VPS_IP:5000"
-echo "   API 테스트: curl http://YOUR_VPS_IP:5000/api/status"
+echo "   서버 주소: http://YOUR_VPS_IP:6000"
+echo "   API 테스트: curl http://YOUR_VPS_IP:6000/api/status"
