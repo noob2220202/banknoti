@@ -57,8 +57,6 @@ class LicenseActivity : AppCompatActivity() {
                             Toast.makeText(this, "❌ 이미 다른 기기에서 사용된 키입니다.", Toast.LENGTH_LONG).show()
                         OnlineKeyValidator.Result.NOT_FOUND ->
                             Toast.makeText(this, "❌ 존재하지 않는 키입니다.", Toast.LENGTH_LONG).show()
-                        OnlineKeyValidator.Result.NOT_CONFIGURED ->
-                            Toast.makeText(this, "⚠️ 서버 URL이 설정되지 않았습니다.\n설정 화면에서 입력해주세요.", Toast.LENGTH_LONG).show()
                         OnlineKeyValidator.Result.ERROR ->
                             Toast.makeText(this, "⚠️ 서버 연결 실패. 인터넷 확인 후 재시도하세요.", Toast.LENGTH_LONG).show()
                     }
