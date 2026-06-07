@@ -42,33 +42,52 @@ jobs:
             *)        DAYS=${CUSTOM:-1} ;;
           esac
 
-          RESPONSE=$(curl -s -X POST "${{ secrets.LICENSE_SERVER_URL }}/api/generate" \
+          curl -s -X POST "${{ secrets.LICENSE_SERVER_URL }}/api/generate" \
             -H "Content-Type: application/json" \
             -H "X-Admin-Token: ${{ secrets.LICENSE_ADMIN_TOKEN }}" \
-            -d "{\"days\": $DAYS, \"quantity\": $QUANTITY, \"memo\": \"$MEMO\"}")
+            -d "{\"days\": $DAYS, \"quantity\": $QUANTITY, \"memo\": \"$MEMO\"}" \
+            -o response.json
 
-          echo "서버 응답: $RESPONSE"
+          echo "=== 서버 응답 ===" && cat response.json
 
-          python3 - <<PYEOF
-          import json, os
+          # Python 스크립트를 파일로 저장 (heredoc 충돌 방지)
+          cat > parse_keys.py << 'PYEOF'
+          import json, os, sys
           from datetime import datetime, timedelta
 
-          data = json.loads('''$RESPONSE''')
+          with open("response.json") as f:
+              raw = f.read().strip()
+
+          if not raw or raw.startswith("<"):
+              print("서버 오류: HTML 응답 받음", file=sys.stderr)
+              sys.exit(1)
+
+          data = json.loads(raw)
           keys = data.get("keys", [])
           days = data.get("days", 0)
           memo = data.get("memo", "")
 
           summary_file = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          exp = (datetime.utcnow() + timedelta(days=days)).strftime("%Y-%m-%d")
+
+          lines = []
+          lines.append("## 🔑 라이선스 키 발급 완료\n")
+          lines.append("| 항목 | 내용 |")
+          lines.append("|------|------|")
+          lines.append(f"| 유효 기간 | **{days}일** |")
+          if memo:
+              lines.append(f"| 메모 | {memo} |")
+          lines.append(f"| 발급 수량 | {len(keys)}개 |\n")
+          lines.append("### 발급된 키 (1회용)\n")
+          lines.append("```")
+          for key in keys:
+              lines.append(f"{key}   (만료: {exp})")
+          lines.append("```")
+
           with open(summary_file, "a") as f:
-              f.write(f"## 🔑 라이선스 키 발급 완료\n\n")
-              f.write(f"| 항목 | 내용 |\n|------|------|\n")
-              f.write(f"| 유효 기간 | **{days}일** |\n")
-              if memo:
-                  f.write(f"| 메모 | {memo} |\n")
-              f.write(f"| 발급 수량 | {len(keys)}개 |\n\n")
-              f.write(f"### 발급된 키 (1회용)\n\n```\n")
-              exp = (datetime.utcnow() + timedelta(days=days)).strftime("%Y-%m-%d")
-              for key in keys:
-                  f.write(f"{key}   (만료: {exp})\n")
-              f.write(f"```\n")
+              f.write("\n".join(lines) + "\n")
+
+          print(f"키 {len(keys)}개 발급 완료")
           PYEOF
+
+          python3 parse_keys.py
