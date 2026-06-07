@@ -13,24 +13,21 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        supportActionBar?.title = "설정"
+        supportActionBar?.title = "텔레그램 봇 설정"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val prefs       = getSharedPreferences("notifybridge_prefs", Context.MODE_PRIVATE)
         val tokenInput  = findViewById<EditText>(R.id.inputBotToken)
         val chatIdInput = findViewById<EditText>(R.id.inputChatId)
-        val serverInput = findViewById<EditText>(R.id.inputServerUrl)
         val saveButton  = findViewById<Button>(R.id.btnSave)
         val testButton  = findViewById<Button>(R.id.btnTest)
 
         tokenInput.setText(prefs.getString(TelegramSender.KEY_BOT_TOKEN, ""))
         chatIdInput.setText(prefs.getString(TelegramSender.KEY_CHAT_ID, ""))
-        serverInput.setText(prefs.getString(OnlineKeyValidator.KEY_SERVER_URL, ""))
 
         saveButton.setOnClickListener {
-            val token     = tokenInput.text.toString().trim()
-            val chatId    = chatIdInput.text.toString().trim()
-            val serverUrl = serverInput.text.toString().trim().trimEnd('/')
+            val token  = tokenInput.text.toString().trim()
+            val chatId = chatIdInput.text.toString().trim()
 
             if (token.isEmpty() || chatId.isEmpty()) {
                 Toast.makeText(this, "봇 토큰과 채팅 ID를 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -40,7 +37,6 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit()
                 .putString(TelegramSender.KEY_BOT_TOKEN, token)
                 .putString(TelegramSender.KEY_CHAT_ID, chatId)
-                .putString(OnlineKeyValidator.KEY_SERVER_URL, serverUrl)
                 .apply()
 
             Toast.makeText(this, "저장 완료!", Toast.LENGTH_SHORT).show()
