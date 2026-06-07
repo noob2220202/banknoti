@@ -93,7 +93,7 @@
             android:id="@+id/inputServerUrl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="http://YOUR_VPS_IP:5000"
+            android:hint="http://YOUR_VPS_IP:6000"
             android:inputType="textUri"
             android:padding="12dp"
             android:background="#FFFFFF"
