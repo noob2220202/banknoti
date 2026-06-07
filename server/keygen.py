@@ -22,8 +22,9 @@ def load_env(path="/opt/notifybridge/.env"):
 
 load_env()
 
-SECRET_HMAC = os.environ.get("SECRET_HMAC", "NB-NotifyBridge-2024-K9xP2mQr")
-DB_PATH     = os.environ.get("DB_PATH",     "/opt/notifybridge/licenses.db")
+# 앱 내 LicenseManager.kt 의 SECRET 과 반드시 동일해야 함 (변경 금지)
+SECRET_HMAC = "NB-NotifyBridge-2024-K9xP2mQr"
+DB_PATH     = os.environ.get("DB_PATH", "/opt/notifybridge/licenses.db")
 
 # ── 키 생성 ─────────────────────────────────────────────────────
 def make_key(days: int, offset: int = 0) -> str:
