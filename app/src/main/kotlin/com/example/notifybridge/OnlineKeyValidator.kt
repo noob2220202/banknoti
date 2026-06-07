@@ -25,6 +25,16 @@ object OnlineKeyValidator {
             return Result.OFFLINE_OK
         }
 
+        // 오프라인 형식 키(epoch-HMAC)는 서버 없이 로컬 HMAC 검증
+        if (Regex("""^\d{10}-[0-9A-Fa-f]{12}$""").matches(licenseKey.trim())) {
+            return if (LicenseManager.validateOfflineKey(licenseKey.trim())) {
+                LicenseManager.save(context, licenseKey.trim())
+                Result.ACTIVATED
+            } else {
+                Result.NOT_FOUND
+            }
+        }
+
         return try {
             val conn = URL("$SERVER_URL/api/activate").openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
