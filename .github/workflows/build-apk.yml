@@ -54,3 +54,18 @@ jobs:
             --latest
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 다운로드 링크 표시
+        run: |
+          URL="https://github.com/${{ github.repository }}/releases/download/latest-build/NotifyBridge.apk"
+          echo "## 📲 APK 다운로드" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 👇 아래 링크를 휴대폰으로 열어 설치하세요" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**[⬇️ NotifyBridge.apk 다운로드]($URL)**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "![QR](https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=$URL)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "$URL" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
